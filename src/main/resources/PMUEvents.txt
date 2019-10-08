@@ -1,0 +1,36 @@
+package com.bempel.perf.pmuevents;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+public class PMUEvents {
+    private static PMUEventMap eventMap;
+    private static Map<String, String> cpuIdMap = new HashMap<>();
+    static {
+%s		installEventMap();
+    }
+
+    public static void register(PMUEventMap eventMap) {
+		PMUEvents.eventMap = eventMap;
+    }
+
+    public static PMUEventMap getPMUEventMap() {
+        return eventMap;
+    }
+
+    private static void installEventMap() {
+    	String cpuId = CPUID.getCpuId();
+        for (Map.Entry<String, String> entry : cpuIdMap.entrySet()) {
+            if (Pattern.matches(entry.getKey(), cpuId)) {
+            	try {
+					Class.forName(PMUEvents.class.getPackage().getName() + "." + entry.getValue(), true, PMUEvents.class.getClassLoader());
+				}
+            	catch (Exception ex) {
+            		ex.printStackTrace();
+				}
+            }
+        }
+    }
+
+}
