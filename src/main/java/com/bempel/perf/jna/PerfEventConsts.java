@@ -16,7 +16,7 @@ public class PerfEventConsts {
     }
 
     public static PerfEventInfo getPerfEvent(String name) {
-        return perfEventMap.get(name);
+        return perfEventMap.get(name.toUpperCase());
     }
 
     // attr.type perf_type_id

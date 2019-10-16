@@ -3,6 +3,7 @@ package com.bempel.perf;
 import com.bempel.perf.jna.CLibrary;
 import com.bempel.perf.jna.PerfEventConsts;
 import com.bempel.perf.jna.PerfEventAttr;
+import com.bempel.perf.jna.Tracepoint;
 import com.bempel.perf.pmuevents.PMUEvent;
 import com.bempel.perf.pmuevents.PMUEvents;
 import com.sun.jna.Native;
@@ -222,7 +223,7 @@ public class PerfEvent {
 
         static void initPerfEventByName(PerfEventAttr ea, String lookupName) {
             // lookup in predefined generic perf events
-            PerfEventConsts.PerfEventInfo perfEventInfo = PerfEventConsts.getPerfEvent(lookupName.toUpperCase());
+            PerfEventConsts.PerfEventInfo perfEventInfo = PerfEventConsts.getPerfEvent(lookupName);
             if (perfEventInfo != null) {
                 ea.type = perfEventInfo.getType();
                 ea.config = perfEventInfo.getValue();
@@ -240,6 +241,13 @@ public class PerfEvent {
                 int umask = Integer.decode(pmuEvent.umask);
                 ea.config = umask << 8 | eventCode;
                 System.out.printf("config[%x]\n", ea.config);
+                return;
+            }
+            // lookup in Tracepoints
+            Tracepoint.TracepointInfo tracepointInfo = Tracepoint.get(lookupName);
+            if (tracepointInfo != null) {
+                ea.type = PerfEventConsts.PERF_TYPE_TRACEPOINT;
+                ea.config = tracepointInfo.getId();
                 return;
             }
             throw new IllegalArgumentException("Cannot find perf event: " + lookupName);

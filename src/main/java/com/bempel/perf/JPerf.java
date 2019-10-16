@@ -1,6 +1,7 @@
 package com.bempel.perf;
 
 import com.bempel.perf.jna.PerfEventConsts;
+import com.bempel.perf.jna.Tracepoint;
 import com.bempel.perf.pmuevents.PMUEventMap;
 import com.bempel.perf.pmuevents.PMUEvents;
 
@@ -64,7 +65,10 @@ public class JPerf {
             System.out.println("\tSampleAfterValue: " + pmuEvent.sampleAfterValue);
             System.out.println("\tCounterHTOff: " + pmuEvent.counterHTOff);
         });
-        // TODO list tracepoints in /sys/kernel/debug/tracing/
+        System.out.printf("\nTracepoints:\n");
+        Tracepoint.forEach((tracepointInfo) -> {
+            System.out.printf("%s [%d]\n", tracepointInfo.getName(), tracepointInfo.getId());
+        });
     }
 
     private static void stat(String[] args) {
