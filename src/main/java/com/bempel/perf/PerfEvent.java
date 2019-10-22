@@ -236,11 +236,9 @@ public class PerfEvent {
             PMUEvent pmuEvent = PMUEvents.getPMUEventMap().get(lookupName);
             if (pmuEvent != null) {
                 ea.type = PerfEventConsts.PERF_TYPE_RAW;
-                System.out.printf("eventCode[%s] umask[%s]\n", pmuEvent.eventCode, pmuEvent.umask);
                 int eventCode = Integer.decode(pmuEvent.eventCode);
                 int umask = Integer.decode(pmuEvent.umask);
                 ea.config = umask << 8 | eventCode;
-                System.out.printf("config[%x]\n", ea.config);
                 return;
             }
             // lookup in Tracepoints
